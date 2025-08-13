@@ -1,13 +1,4 @@
 #!/usr/bin/env python3
-"""
-```bash
-mkdir /mnt/ACMFS
-sudo python3 acmfs.py /mnt/ACMFS --foreground
-cp ~/data.json /mnt/ACMFS/
-```
-
-Dependencies: fusepy, boto3, cryptography, FUSE module, AWS creds.
-"""
 
 from collections import defaultdict
 import errno
@@ -38,7 +29,7 @@ AWS_REGION = os.getenv("AWS_REGION", "eu-west-1")
 _session = boto3.session.Session(region_name=AWS_REGION)
 acm = _session.client("acm")
 
-CUSTOM_OID = ObjectIdentifier("2.16.840.1.113730.1.13")
+CUSTOM_OID = ObjectIdentifier("2.16.840.1.113730.1.13")  # nsComment
 MAX_CHUNK = 1523333  # keep chain cert under ACM 1.5MB due do base64 encoding
 
 
@@ -122,9 +113,6 @@ def list_acm_certificates() -> Dict[str, str]:
         for c in page.get("CertificateSummaryList", []):
             mapping[c["CertificateArn"].split("/")[-1] + ".pem"] = c["CertificateArn"]
     return mapping
-
-
-# Certificate crafting
 
 
 def create_end_entity_certificate(data_chunk: bytes, ca_key, ca_cert):
@@ -320,7 +308,7 @@ def main(mountpoint: str, foreground: bool = False):
 if __name__ == "__main__":
     import argparse
 
-    p = argparse.ArgumentParser("Mount AWS ACM as a data‑carrier filesystem")
+    p = argparse.ArgumentParser("Mount AWS ACM as a filesystem")
     p.add_argument("mountpoint")
     p.add_argument("--foreground", action="store_true")
     args = p.parse_args()
