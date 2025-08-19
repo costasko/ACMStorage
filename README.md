@@ -15,6 +15,14 @@ python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt
 mkdir /mnt/ACMFS
+# make sure you have boto3 AWS creds on your profile
 sudo python acmfs.py /mnt/ACMFS --foreground
-cp ~/data.json /mnt/ACMFS/
+```
+
+
+Logging is verbose. In a new terminal run
+
+```bash
+cp ~/somedata.json /mnt/ACMFS/
+cat /mnt/ACMFS/somedata.json
 ```
